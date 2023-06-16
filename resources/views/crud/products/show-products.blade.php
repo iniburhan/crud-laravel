@@ -48,6 +48,18 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
+                <strong>Stok:</strong>
+                {{ $data['product']->stok }}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
+                <strong>Supplier:</strong>
+                {{ $data['product']->supplier_name }}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
                 <strong>Date Created:</strong>
                 {{($data['product']->created_at) }}
             </div>

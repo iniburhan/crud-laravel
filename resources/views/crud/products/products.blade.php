@@ -4,7 +4,7 @@
     <div class="container">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Laravel 8 CRUD </h2>
+                <h2>Products Data </h2>
             </div>
             <div class="pull-right">
                 {{-- <a class="btn btn-success" href="{{ route('products.create') }}" title="Create a project"> <i class="fas fa-plus-circle"></i>
@@ -20,17 +20,23 @@
             <p>{{ $message }}</p>
         </div>
     @endif
+    {{-- @if ($message = Session::get('warning'))
+        <div class="alert alert-warning">
+            <p>{{ $message }}</p>
+        </div>
+    @endif --}}
 
     <div class="table-responsive">
         <table id="example" class="display nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th>Id</th>
                     <th>Kode</th>
                     <th>Nama Barang</th>
                     <th>Price</th>
                     <th>Image</th>
+                    <th>Stok</th>
+                    <th>Supplier</th>
                     <th>Date Created</th>
                     <th width="280px" style="text-align: center">Action</th>
                 </tr>
@@ -40,12 +46,15 @@
                 @foreach ($products as $p)
                 <tr>
                     <td>{{$loop->iteration}}</td>
-                    <td>{{$p->id_product}}</td>
                     <td>{{$p->kd_product}}</td>
                     <td>{{$p->product_name}}</td>
                     <td>{{$p->price}}</td>
                     <td>
-                        <img src="{{ asset('crud/products/'.$p->image)}}"  alt="{{$p->image}}" style="width: 100px;border-radius: 50px;"></td>
+                        <img src="{{ asset('crud/products/'.$p->image)}}"  alt="{{$p->image}}"
+                            style="width: 100px;border-radius: 50px;"
+                    ></td>
+                    <td>{{$p->stok}}</td>
+                    <td>{{$p->supplier_name}}</td>
                     <td>{{$p->created_at}}</td>
                     <td>
                         <form action="{{ url('delete-products') }}" method="POST" style="text-align:center">
@@ -60,8 +69,8 @@
 
                             @csrf
 
-                            <button type="submit" title="delete" style="border: none; background-color:transparent;" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash fa-lg text-danger  "></i>
+                            <button type="submit" title="delete"  class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash fa-lg text-white  "></i>
 
                             </button>
                         </form>

@@ -3,33 +3,30 @@
 namespace App\Http\Controllers\Crud\Products;
 
 use App\Models\Crud\Products\Product;
+use App\Models\Crud\Suppliers\Supplier;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         // index master
         // $products = Product::get();
         // return view('crud/products/products', ['products'=>$products]);
 
-        $data = [
-            'flag' => 1,
-        ];
+        // untuk soft deletes
+        // $data = [
+        //     'flag' => 1,
+        // ];
 
         // get (mengambil) semua data dari model Product
-        $products = Product::where($data)->get();
+        // $products = Product::where($data)->get();
         // dd($product); // die dump
 
         // memuat view products dan passing ke $products
-        return view('crud/products/products', ['products'=>$products]);
+        // return view('crud/products/products', ['products'=>$products]);
 
         // if ($data = ['flag' => 1]) {
         //     $products = Product::where($data)->get();
@@ -39,25 +36,34 @@ class ProductController extends Controller
         //     return view('crud/products/trash', ['products'=>$products]);
         // }
 
+        // array untuk passing data ke where($data)
+        // $data = [
+        //     'products.flag' => 1,
+        // ];
+
+        // $products = Product::where($data)->get();
+
+        // menampilkan data dengan join table
+        $products = Product::select(
+            'products.*',
+            'suppliers.supplier_name'
+        )
+                    ->leftjoin('suppliers', 'suppliers.id_supplier', '=', 'products.id_supplier')
+                    ->where('products.flag', 1)
+                    ->get();
+
+        return view('crud/products/products', ['products'=>$products]);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         // memuat form create
-        return view('crud/products/create-products');
+        $supplier = Supplier::get(); //ambil data dari model supplier
+
+        return view('crud/products/create-products')->with('supplier', $supplier);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         // validate 1
@@ -68,32 +74,64 @@ class ProductController extends Controller
         // ]);
 
         // validate 2
-        $this->validate($request, [
-            'kd_product' => 'required',
-            'product_name' => 'required',
-            'price' => 'required',
-            'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'image' => 'required|image|mimes:png,jpg,jpeg'
-        ]);
+        // $this->validate($request, [
+        //     'kd_product' => 'required',
+        //     'product_name' => 'required',
+        //     'price' => 'required',
+        //     'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        //     // 'image' => 'required|image|mimes:png,jpg,jpeg'
+        // ]);
 
         // upload image 1
         // $image = $request->file('image');
         // $image->storeAs('public/blogs', $image->hashName());
 
         // upload image 2
+        // $image = time() . '.' . $request->image->extension();
+        // $request->image->move(public_path('crud/products'), $image);
+
+        // menampung data di array
+        // $data  = [
+        //     'kd_product' => $request->kd_product,
+        //     'product_name' => $request->product_name,
+        //     'price' => $request->price,
+        //     'image' => $image,
+        //     'flag' => 1, // untuk soft delete kalau 1 berarti eksis
+        // ];
+
+        // memasukkan data dari data array
+        // $product = Product::insert($data);
+
+        // redirect
+        // if ($product) {
+        //     return redirect('products')->with('success', 'Project created successfully.')
+        //                             ->with('image', $image);
+        // } else {
+        //     return redirect('products')->with('error', 'Project created Failed.');
+        // }
+
+        $this->validate($request, [
+            'kd_product' => 'required',
+            'product_name' => 'required',
+            'price' => 'required',
+            'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'stok' => 'required',
+            'id_supplier' => 'required',
+        ]);
+
         $image = time() . '.' . $request->image->extension();
         $request->image->move(public_path('crud/products'), $image);
 
-        // menampung data di array
         $data  = [
             'kd_product' => $request->kd_product,
             'product_name' => $request->product_name,
             'price' => $request->price,
             'image' => $image,
+            'stok' => $request->stok,
+            'id_supplier' => $request->id_supplier,
             'flag' => 1, // untuk soft delete kalau 1 berarti eksis
         ];
 
-        // memasukkan data dari data array
         $product = Product::insert($data);
 
         // redirect
@@ -103,19 +141,22 @@ class ProductController extends Controller
         } else {
             return redirect('products')->with('error', 'Project created Failed.');
         }
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id_product)
     {
         //
         // dd($id_product);
-        $product = Product::where('id_product', $id_product)->first();
+        // $product = Product::where('id_product', $id_product)->first();
+
+        $product = Product::select(
+            'products.*',
+            'suppliers.supplier_name',
+        )
+            ->join('suppliers', 'suppliers.id_supplier', '=', 'products.id_supplier')
+            ->where('id_product', $id_product)
+            ->first();
 
         $data = [
             'product' => $product,
@@ -124,32 +165,30 @@ class ProductController extends Controller
         return view('crud/products/show-products')->with('data', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id_product)
     {
         //
-        $product = Product::where('id_product', $id_product)->first();
+        // $product = Product::where('id_product', $id_product)->first();
+
+        $supplier = Supplier::get();
+
+        $product = Product::select(
+            'products.*',
+            'suppliers.supplier_name',
+        )
+            ->leftjoin('suppliers', 'suppliers.id_supplier', '=', 'products.id_supplier')
+            ->where('id_product', $id_product)
+            ->first();
 
         $data = [
             'product' => $product,
         ];
         // return view('crud/products/edit-products', compact('product'));
-        return view('crud/products/edit-products')->with('data', $data);
+        return view('crud/products/edit-products')->with('data', $data)
+                                                ->with('supplier', $supplier);
 
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request , $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
         // validate 1
@@ -161,16 +200,18 @@ class ProductController extends Controller
         // $id_products = $request->id_product;
 
         // validate 2
-        $this->validate($request, [
-            'kd_product' => 'required',
-            'product_name' => 'required',
-            'price' => 'required',
-            'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'image' => 'required|image|mimes:png,jpg,jpeg'
-        ]);
+        // $this->validate($request, [
+        //     'kd_product' => 'required',
+        //     'product_name' => 'required',
+        //     'price' => 'required',
+        //     'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        //     // 'image' => 'required|image|mimes:png,jpg,jpeg'
+        // ]);
 
         // mencari data by id
-        $product = Product::findOrFail($request->id_product);
+        // 1
+        // $product = Product::findOrFail($request->id_product);
+        // 2
         // $product = Product::where('id_product', $request->id_product)->first();
         // dd($product);
 
@@ -179,8 +220,8 @@ class ProductController extends Controller
         // $image->storeAs('public/blogs', $image->hashName());
 
         // upload image 2
-        $image = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('crud/products'), $image);
+        // $image = time() . '.' . $request->image->extension();
+        // $request->image->move(public_path('crud/products'), $image);
 
         // update data
         // $product->update([
@@ -192,37 +233,95 @@ class ProductController extends Controller
 
         // dd($product->id_product);
 
-        $data = [
-            'kd_product' => $request->kd_product,
-            'product_name' => $request->product_name,
-            'price' => $request->price,
-            'image' => $image,
-        ];
+        // $data = [
+        //     'kd_product' => $request->kd_product,
+        //     'product_name' => $request->product_name,
+        //     'price' => $request->price,
+        //     'image' => $image,
+        // ];
 
-
-        $update = Product::where('id_product', $product->id_product)->update($data);
+        // update data
+        // $update = Product::where('id_product', $product->id_product)->update($data);
 
         // redirect
-        if ($update) {
-            return redirect('products')->with('success', 'Project updated successfully.')
-                                        ->with('image', $image);
+        // if ($update) {
+        //     return redirect('products')->with('success', 'Project updated successfully.')
+        //                                 ->with('image', $image);
+        // } else {
+        //     return redirect('products')->with('error', 'Project updated Failed.');
+        // }
+        if (($request->image) == "")
+        {
+            $this->validate($request, [
+                'kd_product' => 'required',
+                'product_name' => 'required',
+                'price' => 'required',
+                'stok' => 'required',
+                // 'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            $product = Product::findOrFail($request->id_product);
+
+            // $image = time() . '.' . $request->image->extension();
+            // $request->image->move(public_path('crud/products'), $image);
+
+            $data = [
+                'kd_product' => $request->kd_product,
+                'product_name' => $request->product_name,
+                'price' => $request->price,
+                'stok' => $request->stok,
+                'id_supplier' => $request->id_supplier,
+            ];
+
+            $update = Product::where('id_product', $product->id_product)->update($data);
+
+            if ($update) {
+                return redirect('products')->with('success', 'Project updated successfully.');
+            } else {
+                return redirect('products')->with('error', 'Project updated Failed.');
+            }
+
         } else {
-            return redirect('products')->with('error', 'Project updated Failed.');
+            $this->validate($request, [
+                'kd_product' => 'required',
+                'product_name' => 'required',
+                'price' => 'required',
+                'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'stok' => 'required',
+                'id_supplier' => 'required',
+            ]);
+
+            $product = Product::findOrFail($request->id_product);
+
+            $image = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('crud/products'), $image);
+
+            $data = [
+                'kd_product' => $request->kd_product,
+                'product_name' => $request->product_name,
+                'price' => $request->price,
+                'image' => $image,
+                'stok' => $request->stok,
+                'id_supplier' => $request->id_supplier,
+            ];
+
+            $update = Product::where('id_product', $product->id_product)->update($data);
+
+            if ($update) {
+                return redirect('products')->with('success', 'Project updated successfully.')
+                                            ->with('image', $image);
+            } else {
+                return redirect('products')->with('error', 'Project updated Failed.');
+            }
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         // dd($request);
 
         // mencari data by id
-        $product = Product::findOrFail($request->id_product);
+        // $product = Product::findOrFail($request->id_product);
         // dd($product);
 
         // contoh hapus data image yg ada di server sesuai nama filed
@@ -234,11 +333,27 @@ class ProductController extends Controller
         // $delete = Product::where('id_product', $product->id_product)->delete();
 
         // soft delete menggunakan flag 0 masuk trash
+        // $data = [
+        //     'flag' => 0,
+        // ];
+        // $delete = Product::where('id_product', $product->id_product)->update($data);
+        // dd($product->id_product);
+
+        // redirect
+        // if($delete){
+        //     //redirect dengan pesan sukses
+        //     return redirect('products')->with(['success' => 'Project deleted successfully!']);
+        // }else{
+        //     //redirect dengan pesan error
+        //     return redirect('products')->with(['error' => 'Project deleted Failed!']);
+        // }
+
+        $product = Product::findOrFail($request->id_product);
+
         $data = [
             'flag' => 0,
         ];
         $delete = Product::where('id_product', $product->id_product)->update($data);
-        // dd($product->id_product);
 
         if($delete){
             //redirect dengan pesan sukses
@@ -247,6 +362,8 @@ class ProductController extends Controller
             //redirect dengan pesan error
             return redirect('products')->with(['error' => 'Project deleted Failed!']);
         }
+
+
     }
 
     public function restore(Request $request)

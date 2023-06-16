@@ -54,6 +54,32 @@
                         value="{{ old('image', $data['product']->image) }}">
                 </div>
             </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Stok:</strong>
+                    <input type="text" name="stok" class="form-control" placeholder="{{ $data['product']->stok }}"
+                        value="{{ $data['product']->stok }}">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <strong>Supplier:</strong>
+                    <select name="id_supplier" id="id_supplier" placeholder="{{ $data['product']->supplier_name }}"
+                        class="form-control" required>
+                        {{-- <option value="">Suppliers</option> --}}
+                        <option value="{{ $data['product']->supplier_name }}">
+                            {{ old('supplier_name',$data['product']->supplier_name) }}
+                        </option>
+
+                        @foreach ($supplier as $s)
+                        <option value="{{ $s->id_supplier }}">{{ $s->supplier_name }}</option>
+                        @endforeach
+
+                    </select>
+                    {{-- <input type="text" name="id_supplier" class="form-control" placeholder="{{ $data['product']->supplier_name }}"
+                        value="{{ $data['product']->supplier_name }}"> --}}
+                </div>
+            </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
