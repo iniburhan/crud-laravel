@@ -17,7 +17,7 @@ class CustomerController extends Controller
 
         $customer = Customer::where($data)->get();
 
-        return view('crud/customers/customers', ['customer'=>$customer]);
+        return view('crud/customers/customers')->with('customer', $customer);
 
     }
 

@@ -252,7 +252,7 @@ class ProductController extends Controller
         // }
         if (($request->image) == "")
         {
-            $this->validate($request, [
+            $request->validate([
                 'kd_product' => 'required',
                 'product_name' => 'required',
                 'price' => 'required',

@@ -17,7 +17,7 @@ class SupplierController extends Controller
 
         $supplier = Supplier::where($data)->get();
 
-        return view('crud/suppliers/suppliers', ['supplier'=>$supplier]);
+        return view('crud/suppliers/suppliers')->with('supplier', $supplier);
 
     }
 
