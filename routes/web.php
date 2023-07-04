@@ -72,3 +72,9 @@ Route::post('update-transactions', [App\Http\Controllers\Crud\Transactions\Trans
 Route::post('delete-transactions', [App\Http\Controllers\Crud\Transactions\TransactionController::class, 'destroy']);
 Route::post('restore-transactions', [App\Http\Controllers\Crud\Transactions\TransactionController::class, 'restore']);
 
+// Jquery Get data
+Route::get('product-selects', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'index']);
+Route::get('get-product-selects', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getProduct']);
+Route::get('get-product-lists', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getProductList']);
+Route::get('get-supplier-details', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getSupplierDetail']);
+Route::get('get-product-details', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getProductDetail']);
