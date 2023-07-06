@@ -150,6 +150,11 @@
                           >Customers</a
                         >
                     </li>
+                    <li class="submenu-item">
+                        <a href="{{ url('product-selects') }}" class="submenu-link"
+                          >Product Select Jquery</a
+                        >
+                    </li>
                   </ul>
                 </li>
               </ul>

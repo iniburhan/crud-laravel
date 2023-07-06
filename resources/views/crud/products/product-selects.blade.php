@@ -5,7 +5,7 @@
         <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-            <h3>Supplier Data</h3>
+            <h3>Product Select JQuery</h3>
             {{-- <p class="text-subtitle text-muted">
                 A sortable, searchable, paginated table without dependencies
                 thanks to simple-datatables.
@@ -203,9 +203,19 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                                    <div class="spinner-border text-info " role="status" id='loading-1'>
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group" id="product-list">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                                    <div class="spinner-border text-info " role="status" id='loading-2'>
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -259,6 +269,11 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                                    <div class="spinner-border text-info " role="status" id='loading-3'>
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -288,6 +303,7 @@
                 dataType : "JSON",
                 success:function(data)
                 {
+
                     var html = '<option> -Pilih Product- </option>'
                     for (let i = 0; i < data.length; i++) {
                         html+= '<option value = "'+data[i]['id_product']+'">'+data[i]['product_name']+'</option>';
@@ -301,6 +317,9 @@
 
     {{-- Jquery untuk get product list --}}
     <script>
+        $(document).ready(function(){
+            $("#loading-2").hide();
+        });
         $('#supplier').on('change', function()
         {
             id_supplier = this.value;
@@ -312,6 +331,9 @@
                 type : "GET",
                 data : {id_supplier : id_supplier}, // {var_from_controller : var_from_jquery_this.value}
                 dataType : "JSON",
+                beforeSend: function() {
+                    $("#loading-2").show();
+                },
                 success:function(data)
                 {
                     var html = ''
@@ -351,6 +373,7 @@
                         </tbody>
                     </table>
                     `;
+                    $("#loading-2").hide();
                     $('#product-list').append(html);
 
                 }
@@ -360,9 +383,14 @@
 
     {{-- Jquery untuk get supplier detail --}}
     <script>
+
+        $(document).ready(function(){
+            $("#loading-1").hide();
+        });
         $('#supplier').on('change', function()
         {
             id_supplier = this.value;
+
 
             $('#supplier_detail').empty();
             $('#product_detail').empty();
@@ -372,6 +400,9 @@
                 type : "GET",
                 data : {id_supplier : id_supplier},
                 dataType : "JSON",
+                beforeSend: function() {
+                    $("#loading-1").show();
+                },
                 success:function(data)
                 {
                     var html = ''
@@ -379,6 +410,8 @@
                     // for (let i = 0; i < data.length; i++) {
                     //     html+= '<option value = "'+data[i]['id_product']+'">'+data[i]['product_name']+'</option>';
                     // }
+
+
                     for (let i = 0; i < data.length; i++) {
                         html += '<tr>'
                         html += '<td>'+data[i]['id_supplier']+'</td>'
@@ -391,6 +424,7 @@
                         //     '</td>'
                         html += '</tr>'
                     }
+                    $("#loading-1").hide();
                     $('#supplier_detail').append(html);
 
                 }
@@ -400,6 +434,10 @@
 
     {{-- Jquery untuk get product detail --}}
     <script>
+        $(document).ready(function(){
+            $("#loading-3").hide();
+        });
+
         $('#product').on('change', function()
         {
             id_product = this.value;
@@ -411,6 +449,9 @@
                 type : "GET",
                 data : {id_product : id_product},
                 dataType : "JSON",
+                beforeSend: function() {
+                    $("#loading-3").show();
+                },
                 success:function(data)
                 {
                     var html = ''
@@ -430,6 +471,7 @@
                         //     '</td>'
                         html += '</tr>'
                     }
+                    $("#loading-3").hide();
                     $('#product_detail').append(html);
                 }
             });

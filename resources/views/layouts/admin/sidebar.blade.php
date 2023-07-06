@@ -107,6 +107,11 @@
                     >Suppliers</a
                     >
                 </ul>
+                <li class="submenu-item">
+                    <a href="{{ url('product-selects') }}" class="submenu-link"
+                    >Suppliers</a
+                    >
+                </ul>
             </li>
             </ul>
         </div>

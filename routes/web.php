@@ -78,3 +78,6 @@ Route::get('get-product-selects', [App\Http\Controllers\Crud\Products\ProductSel
 Route::get('get-product-lists', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getProductList']);
 Route::get('get-supplier-details', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getSupplierDetail']);
 Route::get('get-product-details', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'getProductDetail']);
+
+// dummy jquery
+Route::get('jquery-dummy', [App\Http\Controllers\Crud\Products\ProductSelectController::class, 'index']);
