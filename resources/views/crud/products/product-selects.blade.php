@@ -213,7 +213,7 @@
                                 <div class="form-group" id="product-list">
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                                    <div class="spinner-border text-info " role="status" id='loading-2'>
+                                    <div class="spinner-grow text-info " role="status" id='loading-2'>
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                 </div>
@@ -270,8 +270,9 @@
                                     </table>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                                    <div class="spinner-border text-info " role="status" id='loading-3'>
+                                    <div class="" role="status" id='loading-3'>
                                         <span class="visually-hidden">Loading...</span>
+                                        <img src="{{asset('crud/admin/assets/compiled/svg/ball-triangle.svg')}}" class="me-4" style="width: 3rem" alt="audio"/>
                                     </div>
                                 </div>
                             </div>
