@@ -447,8 +447,10 @@
     <script src="{{ asset('crud/admin/assets/compiled/js/app.js') }}"></script>
 
     <!-- Need: Apexcharts -->
+    <script src="{{ asset('crud/admin/assets/extensions/dayjs/dayjs.min.js') }}"></script>
     <script src="{{ asset('crud/admin/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('crud/admin/assets/static/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('crud/admin/assets/static/js/pages/ui-apexchart.js') }}"></script>
 
     {{-- data table  --}}
     <script src="{{ asset('crud/admin/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
